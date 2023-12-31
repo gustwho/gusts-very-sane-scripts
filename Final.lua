@@ -7,6 +7,7 @@ local ModuleUI = (function()
 local UIModule = {}
 local TS = game:GetService("TweenService")
 UIModule.UI = ModuleScreenUI
+UIModule.UI.ResetOnSpawn = false
 local UIShown = UIModule.UI.Data.UIShown
 
 
@@ -287,13 +288,15 @@ function module(GS)
 				end
 				local target = char:WaitForChild("Humanoid").MoveDirection*char.Humanoid.WalkSpeed
 				local old = char:WaitForChild("HumanoidRootPart").Velocity
-				char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(target.X, old.Y, target.Z)
-			end;
+				char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(target.X, old.Y, target.Z) 
+			elseif mode == 4 then
+
+			end
 			if spac == true and char:WaitForChild("Humanoid").PlatformStand then
 				spac = false
 				local eeaa = char:WaitForChild("HumanoidRootPart").Velocity
 				char:WaitForChild("HumanoidRootPart").Velocity = Vector3.new(eeaa.X, char.Humanoid.JumpPower, eeaa.Z)
-			end;
+			end
 		end)
 		
 		UIS.JumpRequest:Connect(function()

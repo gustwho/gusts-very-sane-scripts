@@ -1,6 +1,7 @@
-# man i hate roblo
 import os
+from time import time as tick
 import subprocess
+starttick = tick()
 final = ["local ModuleScreenUI,_ ="]
 
 def raw_dump(text): # least useful function in 2023
@@ -14,14 +15,21 @@ with open("Source/GenUI.lua", "r") as f:
 
 fuckery_fuck = []
 
-def dump_module(text,module,ar=fuckery_fuck):
-    ar.append(f"local Module{module} = (function()")
-    ar.append(text)
-    ar.append("end)();")
-
 def load_module(path,module,ar=fuckery_fuck):
     with open(path, "r") as f:
-        dump_module(f.read(),module,ar)
+        ar.append(f"local Module{module} = (function()")
+        ar.append(f.read())
+        ar.append("end)();")
+
+def load_module_if(path,module,game_id,ar=fuckery_fuck):
+    with open(path, "r") as f:
+        ar.append(f"local Module{module} = (function()")
+        ar.append(f"if tostring(game.GameId) == \"{game_id}\" then")
+        ar.append(f.read())
+        ar.append("else")
+        ar.append("return (function()end)")
+        ar.append("end")
+        ar.append("end)();")
 
 load_module("Source/UI.lua","UI")
 load_module("Source/Buttons.lua","Buttons")
@@ -36,6 +44,11 @@ loaded_scripts = []
 for i in os.listdir("Source/Scripts/"):
     load_module("Source/Scripts/" + i,"CustomScript" + i.split(".")[0],more_fuckery_fuck)
     loaded_scripts.append("ModuleCustomScript" + i.split(".")[0])
+
+for i in os.listdir("Source/Game/"):
+    for v in os.listdir("Source/Game/" + i):
+        load_module_if("Source/Game/" + i + "/" + v,"CustomScript" + v.split(".")[0],i,more_fuckery_fuck)
+        loaded_scripts.append("ModuleCustomScript" + v.split(".")[0])
 
 compiledfuckeryfuck = "\n".join(more_fuckery_fuck) + "\n" + "(GS)\n".join(loaded_scripts) + "(GS)"
 ftext = "\n".join(final).replace("--[[ insert fuckery fuck here ]]--",compiledfuckeryfuck)
@@ -52,3 +65,5 @@ with open("Final.lua","w+") as f:
 # I am going to go insane over this fucking minifier. 
 with open("Mini.lua","w+") as f:
     f.write(subprocess.run("luamin -f Final.lua", capture_output=True, shell=True, text=True).stdout)
+
+print(f"took like {round((tick()-starttick)*1000)}ms")

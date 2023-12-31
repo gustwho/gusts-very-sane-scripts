@@ -208,7 +208,7 @@ function module(GS)
 	
 	--[[ UI Shit ]]--
 	FollowCategory.Buttons:AddInput("Username",plr.Name,{function(btn)
-		follow = game.Players[btn.text]
+		follow = game.Players[btn.text].Character.HumanoidRootPart
 	end})
 	FollowCategory.Buttons:AddToggle("Follow",{function(btn)
 		following = btn.active
@@ -318,9 +318,44 @@ function module(GS)
 end
 return module
 end)();
+local ModuleCustomScriptAbyssNoFall = (function()
+if tostring(game.GameId) == "12151453277" then
+function module(GS)
+	
+	--[[ Init Shit ]]--
+	local plr = game.Players.LocalPlayer
+    local char = plr.Character
+    local enabled = false
+	
+	--[[ UI Category Init Shit ]]--
+	local Category = GS.Buttons.Category.new("Abyss")
+
+	--[[ spaghetti ]]--
+    game:GetService("RunService").Heartbeat:Connect(function()
+        if enabled then
+            local h = char.HumanoidRootPart.Velocity
+            if h.Y < -50 then
+                char.Humanoid:ChangeState(Enum.HumanoidStateType.Climbing)
+                char.HumanoidRootPart.Velocity = Vector3.new(h.X,-5,h.Z)
+            end
+        end
+    end)
+	
+	--[[ UI Shit ]]--
+	Category.Buttons:AddToggle("No Fall",{function(btn)
+        char = plr.Character
+        enabled = btn.active
+	end})
+end
+return module
+else
+return (function()end)
+end
+end)();
 ModuleCustomScriptFollow(GS)
 ModuleCustomScriptSimpleStuff(GS)
 ModuleCustomScriptVelocityController(GS)
+ModuleCustomScriptAbyssNoFall(GS)
 
 game.Players.LocalPlayer.CharacterAdded:Wait()
 UI.Main.WarnReset.Visible = false

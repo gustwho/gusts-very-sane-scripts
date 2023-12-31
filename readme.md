@@ -16,3 +16,5 @@ byfron made me port my stuff to mobile
 - Simple: platform stand/sit/freeze
 
 ### it shouldnt be too hard to make your own custom script here
+
+# DONT USE MINI.LUA
